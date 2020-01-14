@@ -4,7 +4,7 @@
 Controller controller;
 
 auto chassis = ChassisControllerBuilder()
-                .withMotors(1, 9, -2, -10)
+                .withMotors(1, -2, -10, 9)
                 .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
                 .build();
 
@@ -15,7 +15,7 @@ ControllerButton intakeFwd(ControllerDigital::L1);
 ControllerButton intakeRev(ControllerDigital::L2);
 
 // TRAY
-Motor trayMotor(5, false, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
+Motor trayMotor(5, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
 Lift tray(&trayMotor);
 
 ControllerButton trayBack(ControllerDigital::Y);
@@ -36,6 +36,25 @@ ControllerButton twoBarIntaking(ControllerDigital::down);
 ControllerButton twoBarLowTower(ControllerDigital::B);
 ControllerButton twoBarMidTower(ControllerDigital::A);
 
+// AUTONOMOUS SELECTION
+bool redAlliance = true;
+bool protectedSide = true;
+bool autonomousEnabled = true;
+
+void toggleAlliance() {
+    redAlliance = !redAlliance;
+    pros::lcd::set_text(3, redAlliance ? "Red Alliance" : "Blue Alliance");
+}
+void toggleSide() {
+    protectedSide = !protectedSide;
+    pros::lcd::set_text(4, protectedSide ? "Protected Side" : "Unprotected Side");
+}
+void toggleEnabled() {
+    autonomousEnabled = !autonomousEnabled;
+    pros::lcd::set_text(5, autonomousEnabled ? "Autonomous Enabled" : "Autonomous Disabled");
+}
+
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -43,21 +62,30 @@ ControllerButton twoBarMidTower(ControllerDigital::A);
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+    pros::delay(10);
 	pros::lcd::initialize();
     pros::lcd::set_text(0, "344R code, built on:");
 	pros::lcd::set_text(1, __DATE__);
     pros::lcd::set_text(2, __TIME__);
 
+    pros::lcd::set_text(3, redAlliance ? "Red Alliance" : "Blue Alliance");
+    pros::lcd::set_text(4, protectedSide ? "Protected Side" : "Unprotected Side");
+    pros::lcd::set_text(5, autonomousEnabled ? "Autonomous Enabled" : "Autonomous Disabled");
+
     intakeMotors.setBrakeMode(AbstractMotor::brakeMode::hold);
 
     tray.presets[0] = 0; // Stowed
-    tray.presets[1] = 90; // Intaking
-    tray.presets[2] = 180; // Stacking
+    tray.presets[1] = 100; // Intaking
+    tray.presets[2] = 540; // Stacking
 
     twoBar.presets[0] = 0; // Stowed
     twoBar.presets[1] = 90; // Intaking
     twoBar.presets[2] = 180; // Low Tower
     twoBar.presets[3] = 360; // Mid Tower
+
+    pros::lcd::register_btn0_cb(toggleAlliance);
+    pros::lcd::register_btn1_cb(toggleSide);
+    pros::lcd::register_btn2_cb(toggleEnabled);
 }
 
 /**
@@ -90,6 +118,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+    if (!autonomousEnabled) return;
+
     chassis->moveDistance(24_in);
     chassis->waitUntilSettled();
     pros::delay(1000);
@@ -113,13 +143,14 @@ void autonomous() {
 void opcontrol() {
 
 	while (true) {
-        int speed = controller.getAnalog(ControllerAnalog::leftY);
-        int steer = controller.getAnalog(ControllerAnalog::rightX);
+        double speed = controller.getAnalog(ControllerAnalog::leftY);
+        double steer = controller.getAnalog(ControllerAnalog::rightX);
 
         chassis->getModel()->arcade(speed, steer);
 
         // INTAKE
 
+        // TODO: Toggle controls
         if (intakeFwd.isPressed()) {
             intakeMotors.moveVelocity(200);
         } else if (intakeRev.isPressed()) {
