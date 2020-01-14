@@ -1,4 +1,4 @@
-bin/main.cpp.o: src/main.cpp include/main.h include/api.h \
+bin/twoBar.cpp.o: src/twoBar.cpp include/main.h include/api.h \
  include/pros/adi.h include/pros/colors.h include/pros/llemu.h \
  include/display/lvgl.h include/display/lv_version.h \
  include/display/lv_misc/lv_log.h include/display/lv_conf.h \
@@ -178,7 +178,7 @@ bin/main.cpp.o: src/main.cpp include/main.h include/api.h \
  include/okapi/api/units/QMass.hpp include/okapi/api/units/QJerk.hpp \
  include/okapi/api/units/QPressure.hpp \
  include/okapi/api/units/QTorque.hpp include/okapi/api/units/QVolume.hpp \
- include/okapi/impl/util/rate.hpp include/lift.h include/main.h
+ include/okapi/impl/util/rate.hpp include/twoBar.h include/main.h
 
 include/main.h:
 
@@ -678,6 +678,6 @@ include/okapi/api/units/QVolume.hpp:
 
 include/okapi/impl/util/rate.hpp:
 
-include/lift.h:
+include/twoBar.h:
 
 include/main.h:

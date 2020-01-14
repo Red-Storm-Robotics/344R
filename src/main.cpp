@@ -1,5 +1,5 @@
 #include "main.h"
-using namespace okapi;
+#include "lift.h"
 
 Controller controller;
 
@@ -8,18 +8,15 @@ auto chassis = ChassisControllerBuilder()
                 .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
                 .build();
 
-Motor tiltMotor = Motor(5, false, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
-
 MotorGroup intakeMotors = MotorGroup({3, -8});
-
-Motor twoBarMotor = Motor(6);
 
 // INTAKE
 ControllerButton intakeFwd(ControllerDigital::L1);
 ControllerButton intakeRev(ControllerDigital::L2);
 
 // TRAY
-bool tiltManual = false;
+Motor trayMotor(5, false, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
+Lift tray(&trayMotor);
 
 ControllerButton trayBack(ControllerDigital::Y);
 ControllerButton trayForward(ControllerDigital::X);
@@ -28,13 +25,9 @@ ControllerButton trayStowed(ControllerDigital::left);
 ControllerButton trayIntaking(ControllerDigital::R2);
 ControllerButton trayStacking(ControllerDigital::R1);
 
-// FIXME: tune
-const int TRAY_STOWED_POS = 0;
-const int TRAY_INTAKING_POS = 180;
-const int TRAY_STACKING_POS = 360;
-
 // TWO BAR
-bool twoBarManual = false;
+Motor twoBarMotor(6, false, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::degrees);
+Lift twoBar(&twoBarMotor);
 
 ControllerButton twoBarUp(ControllerDigital::up);
 ControllerButton twoBarDown(ControllerDigital::right);
@@ -42,12 +35,6 @@ ControllerButton twoBarDown(ControllerDigital::right);
 ControllerButton twoBarIntaking(ControllerDigital::down);
 ControllerButton twoBarLowTower(ControllerDigital::B);
 ControllerButton twoBarMidTower(ControllerDigital::A);
-
-// FIXME: tune
-const int TWOBAR_STOWED_POS = 0;
-const int TWOBAR_INTAKING_POS = 90;
-const int TWOBAR_LOW_TOWER_POS = 360;
-const int TWOBAR_MID_TOWER_POS = 480;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -62,8 +49,15 @@ void initialize() {
     pros::lcd::set_text(2, __TIME__);
 
     intakeMotors.setBrakeMode(AbstractMotor::brakeMode::hold);
-    tiltMotor.setBrakeMode(AbstractMotor::brakeMode::hold);
-    twoBarMotor.setBrakeMode(AbstractMotor::brakeMode::hold);
+
+    tray.presets[0] = 0; // Stowed
+    tray.presets[1] = 90; // Intaking
+    tray.presets[2] = 180; // Stacking
+
+    twoBar.presets[0] = 0; // Stowed
+    twoBar.presets[1] = 90; // Intaking
+    twoBar.presets[2] = 180; // Low Tower
+    twoBar.presets[3] = 360; // Mid Tower
 }
 
 /**
@@ -137,47 +131,37 @@ void opcontrol() {
         // TRAY
 
         if (trayBack.isPressed()) {
-            tiltMotor.moveVelocity(-100);
-            tiltManual = true;
+            tray.moveVelocity(-100);
         } else if (trayForward.isPressed()) {
-            tiltMotor.moveVelocity(100);
-            tiltManual = true;
-        } else if (tiltManual) {
-            tiltMotor.moveVelocity(0);
+            tray.moveVelocity(100);
+        } else {
+            tray.runNormally();
         }
 
         if (trayStowed.changedToPressed()) {
-            tiltManual = false;
-            tiltMotor.moveAbsolute(TRAY_STOWED_POS, 100);
+            tray.moveToPreset(0);
         } else if (trayIntaking.changedToPressed()) {
-            tiltManual = false;
-            tiltMotor.moveAbsolute(TRAY_INTAKING_POS, 100);
+            tray.moveToPreset(1);
         } else if (trayStacking.changedToPressed()) {
-            tiltManual = false;
-            tiltMotor.moveAbsolute(TRAY_STACKING_POS, 100);
+            tray.moveToPreset(2);
         }
 
         // TWO BAR
 
         if (twoBarDown.isPressed()) {
-            twoBarMotor.moveVelocity(-200);
-            twoBarManual = true;
+            twoBar.moveVelocity(-200);
         } else if (twoBarUp.isPressed()) {
-            twoBarMotor.moveVelocity(200);
-            twoBarManual = true;
-        } else if (twoBarManual) {
-            twoBarMotor.moveVelocity(0);
+            twoBar.moveVelocity(200);
+        } else {
+            twoBar.runNormally();
         }
 
         if (twoBarIntaking.changedToPressed()) {
-            twoBarManual = false;
-            twoBarMotor.moveAbsolute(TWOBAR_INTAKING_POS, 200);
+            twoBar.moveToPreset(1);
         } else if (twoBarLowTower.changedToPressed()) {
-            twoBarManual = false;
-            twoBarMotor.moveAbsolute(TWOBAR_LOW_TOWER_POS, 200);
+            twoBar.moveToPreset(2);
         } else if (twoBarMidTower.changedToPressed()) {
-            twoBarManual = false;
-            twoBarMotor.moveAbsolute(TWOBAR_MID_TOWER_POS, 200);
+            twoBar.moveToPreset(3);
         }
 
         pros::delay(20);
