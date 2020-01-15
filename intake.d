@@ -1,6 +1,6 @@
-/tmp/tmpyh43khd_/intake.cpp.o: src/intake.cpp include/main.h \
- include/api.h include/pros/adi.h include/pros/colors.h \
- include/pros/llemu.h include/display/lvgl.h include/display/lv_version.h \
+bin/intake.cpp.o: src/intake.cpp include/main.h include/api.h \
+ include/pros/adi.h include/pros/colors.h include/pros/llemu.h \
+ include/display/lvgl.h include/display/lv_version.h \
  include/display/lv_misc/lv_log.h include/display/lv_conf.h \
  include/display/lv_conf_checker.h include/display/lv_misc/lv_task.h \
  include/display/lv_misc/lv_mem.h include/display/lv_misc/lv_log.h \

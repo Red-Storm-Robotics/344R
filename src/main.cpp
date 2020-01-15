@@ -55,12 +55,6 @@ void initialize() {
     pros::lcd::set_text(4, protectedSide ? "Protected Side" : "Unprotected Side");
     pros::lcd::set_text(5, autonomousEnabled ? "Autonomous Enabled" : "Autonomous Disabled");
 
-    // // FIXME: tune
-    // twoBar.presets[0] = 0; // Stowed
-    // twoBar.presets[1] = 90; // Intaking
-    // twoBar.presets[2] = 180; // Low Tower
-    // twoBar.presets[3] = 360; // Mid Tower
-
     pros::lcd::register_btn0_cb(toggleAlliance);
     pros::lcd::register_btn1_cb(toggleSide);
     pros::lcd::register_btn2_cb(toggleEnabled);
