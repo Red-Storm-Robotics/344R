@@ -8,10 +8,8 @@ private:
     bool manualMode = false;
 
 public:
-    int presets[5];
-
     Lift(AbstractMotor* motor);
     void moveVelocity(int rpm);
-    void moveToPreset(int preset);
+    void moveToPosition(int pos);
     void runNormally();
 };

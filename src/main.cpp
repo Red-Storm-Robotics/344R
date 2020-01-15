@@ -1,40 +1,23 @@
 #include "main.h"
+#include "ports.h"
 #include "lift.h"
+#include "intake.h"
+#include "tray.h"
+#include "twobar.h"
 
 Controller controller;
 
 auto chassis = ChassisControllerBuilder()
-                .withMotors(1, -2, -10, 9)
+                .withMotors(M_DRIVE_FL, M_DRIVE_FR, M_DRIVE_RR, M_DRIVE_RL)
                 .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
                 .build();
 
-MotorGroup intakeMotors = MotorGroup({3, -8});
+Intake intake;
 
-// INTAKE
-ControllerButton intakeFwd(ControllerDigital::L1);
-ControllerButton intakeRev(ControllerDigital::L2);
-
-// TRAY
-Motor trayMotor(5, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
-Lift tray(&trayMotor);
-
-ControllerButton trayBack(ControllerDigital::Y);
-ControllerButton trayForward(ControllerDigital::X);
-
-ControllerButton trayStowed(ControllerDigital::left);
-ControllerButton trayIntaking(ControllerDigital::R2);
-ControllerButton trayStacking(ControllerDigital::R1);
+Tray tray;
 
 // TWO BAR
-Motor twoBarMotor(6, false, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::degrees);
-Lift twoBar(&twoBarMotor);
-
-ControllerButton twoBarUp(ControllerDigital::up);
-ControllerButton twoBarDown(ControllerDigital::right);
-
-ControllerButton twoBarIntaking(ControllerDigital::down);
-ControllerButton twoBarLowTower(ControllerDigital::B);
-ControllerButton twoBarMidTower(ControllerDigital::A);
+TwoBar twoBar;
 
 // AUTONOMOUS SELECTION
 bool redAlliance = true;
@@ -72,16 +55,11 @@ void initialize() {
     pros::lcd::set_text(4, protectedSide ? "Protected Side" : "Unprotected Side");
     pros::lcd::set_text(5, autonomousEnabled ? "Autonomous Enabled" : "Autonomous Disabled");
 
-    intakeMotors.setBrakeMode(AbstractMotor::brakeMode::hold);
-
-    tray.presets[0] = 0; // Stowed
-    tray.presets[1] = 100; // Intaking
-    tray.presets[2] = 540; // Stacking
-
-    twoBar.presets[0] = 0; // Stowed
-    twoBar.presets[1] = 90; // Intaking
-    twoBar.presets[2] = 180; // Low Tower
-    twoBar.presets[3] = 360; // Mid Tower
+    // // FIXME: tune
+    // twoBar.presets[0] = 0; // Stowed
+    // twoBar.presets[1] = 90; // Intaking
+    // twoBar.presets[2] = 180; // Low Tower
+    // twoBar.presets[3] = 360; // Mid Tower
 
     pros::lcd::register_btn0_cb(toggleAlliance);
     pros::lcd::register_btn1_cb(toggleSide);
@@ -148,52 +126,15 @@ void opcontrol() {
 
         chassis->getModel()->arcade(speed, steer);
 
-        // INTAKE
-
-        // TODO: Toggle controls
-        if (intakeFwd.isPressed()) {
-            intakeMotors.moveVelocity(200);
-        } else if (intakeRev.isPressed()) {
-            intakeMotors.moveVelocity(-200);
-        } else {
-            intakeMotors.moveVelocity(0);
-        }
+        intake.opcontrol();
 
         // TRAY
 
-        if (trayBack.isPressed()) {
-            tray.moveVelocity(-100);
-        } else if (trayForward.isPressed()) {
-            tray.moveVelocity(100);
-        } else {
-            tray.runNormally();
-        }
-
-        if (trayStowed.changedToPressed()) {
-            tray.moveToPreset(0);
-        } else if (trayIntaking.changedToPressed()) {
-            tray.moveToPreset(1);
-        } else if (trayStacking.changedToPressed()) {
-            tray.moveToPreset(2);
-        }
+        tray.opcontrol();
 
         // TWO BAR
 
-        if (twoBarDown.isPressed()) {
-            twoBar.moveVelocity(-200);
-        } else if (twoBarUp.isPressed()) {
-            twoBar.moveVelocity(200);
-        } else {
-            twoBar.runNormally();
-        }
-
-        if (twoBarIntaking.changedToPressed()) {
-            twoBar.moveToPreset(1);
-        } else if (twoBarLowTower.changedToPressed()) {
-            twoBar.moveToPreset(2);
-        } else if (twoBarMidTower.changedToPressed()) {
-            twoBar.moveToPreset(3);
-        }
+        twoBar.opcontrol();
 
         pros::delay(20);
 	}

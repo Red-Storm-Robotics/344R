@@ -11,9 +11,9 @@ void Lift::moveVelocity(int rpm) {
     motor->moveVelocity(rpm);
 }
 
-void Lift::moveToPreset(int preset) {
+void Lift::moveToPosition(int pos) {
     manualMode = false;
-    motor->moveAbsolute(presets[preset], 200);
+    motor->moveAbsolute(pos, 200);
 }
 
 void Lift::runNormally() {
