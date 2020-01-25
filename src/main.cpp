@@ -1,23 +1,20 @@
 #include "main.h"
 #include "ports.h"
-#include "lift.h"
+#include "twoBarTray.h"
 #include "intake.h"
-#include "tray.h"
-#include "twobar.h"
 
 Controller controller;
 
 auto chassis = ChassisControllerBuilder()
                 .withMotors(M_DRIVE_FL, M_DRIVE_FR, M_DRIVE_RR, M_DRIVE_RL)
-                .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
+                .withDimensions(AbstractMotor::gearset::green, {{4_in, 13_in}, imev5GreenTPR})
                 .build();
 
 Intake intake;
 
-Tray tray;
+TwoBarTray twoBarTray;
 
-// TWO BAR
-TwoBar twoBar;
+ControllerButton autonBtn = ControllerButton(ControllerDigital::Y);
 
 // AUTONOMOUS SELECTION
 bool redAlliance = true;
@@ -92,11 +89,44 @@ void competition_initialize() {}
 void autonomous() {
     if (!autonomousEnabled) return;
 
-    chassis->moveDistance(24_in);
-    chassis->waitUntilSettled();
+
+    chassis->setTurnsMirrored(!redAlliance);
+    chassis->setMaxVelocity(50);
+
+    twoBarTray.moveToPreset(true);
+    intake.switchToState(IntakeState::forward);
+    chassis->moveDistance(25_in);
+    intake.switchToState(IntakeState::stop);
+
+    chassis->setMaxVelocity(80);
+
+    chassis->moveDistance(-4_in);
+    chassis->turnAngle(135_deg);
+
+    chassis->moveDistance(16_in);
+    twoBarTray.moveToPreset(false);
+    pros::delay(2000);
+    intake.switchToState(IntakeState::reverse);
+    pros::delay(500);
+    chassis->moveDistance(-16_in);
+    intake.switchToState(IntakeState::stop);
+    twoBarTray.moveToPreset(true);
+
+    chassis->turnAngle(140_deg);
+    intake.switchToState(IntakeState::forward);
+    chassis->moveDistance(22_in);
+    intake.switchToState(IntakeState::stop);
+    chassis->moveDistance(-4_in);
+
+    twoBarTray.twoBar.moveAbsolute(1250, 100);
     pros::delay(1000);
-    chassis->moveDistance(-24_in);
-    chassis->waitUntilSettled();
+
+    chassis->moveDistance(8_in);
+    intake.switchToState(IntakeState::reverse);
+    pros::delay(2000);
+    intake.switchToState(IntakeState::stop);
+
+
 }
 
 /**
@@ -115,6 +145,11 @@ void autonomous() {
 void opcontrol() {
 
 	while (true) {
+        if (autonBtn.changedToPressed()) {
+            autonomous();
+        }
+        chassis->setMaxVelocity(200);
+
         double speed = controller.getAnalog(ControllerAnalog::leftY);
         double steer = controller.getAnalog(ControllerAnalog::rightX);
 
@@ -124,11 +159,7 @@ void opcontrol() {
 
         // TRAY
 
-        tray.opcontrol();
-
-        // TWO BAR
-
-        twoBar.opcontrol();
+        twoBarTray.opcontrol();
 
         pros::delay(20);
 	}

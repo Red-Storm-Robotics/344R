@@ -6,8 +6,8 @@
 #define M_DRIVE_RL 9
 #define M_DRIVE_RR -10
 
-#define M_INTAKE_L -3
-#define M_INTAKE_R 8
+#define M_INTAKE_L 3
+#define M_INTAKE_R -8
 
 #define M_TRAY 5
 #define M_TWOBAR 6
@@ -21,33 +21,27 @@
 #define C_TANK_RIGHT ControllerAnalog::rightY
 
 // Intake
-#define C_INTAKE_FWD ControllerDigital::L1
-#define C_INTAKE_REV ControllerDigital::L2
+#define C_INTAKE_FWD ControllerDigital::R1
+#define C_INTAKE_REV ControllerDigital::R2
 
 // Tray
-#define C_TRAY_STOWED ControllerDigital::left
-#define C_TRAY_STACK  ControllerDigital::R1
-#define C_TRAY_INTAKE ControllerDigital::R2
-
-#define C_TRAY_UP   ControllerDigital::X
-#define C_TRAY_DOWN ControllerDigital::Y
+#define C_TRAY_UP   ControllerDigital::up
+#define C_TRAY_DOWN ControllerDigital::down
 
 // Two Bar
-//#define C_TWOBAR_STOWED
-#define C_TWOBAR_INTAKE ControllerDigital::down
-#define C_TWOBAR_LOW_TOWER ControllerDigital::B
-#define C_TWOBAR_MID_TOWER ControllerDigital::A
 
-#define C_TWOBAR_UP   ControllerDigital::up
-#define C_TWOBAR_DOWN ControllerDigital::right
+#define C_TWOBAR_UP   ControllerDigital::L1
+#define C_TWOBAR_DOWN ControllerDigital::L2
+
+// Combined Presets
+
+#define C_PRESET_INTAKE ControllerDigital::B
+#define C_PRESET_STACK ControllerDigital::A
 
 // PRESET SETTINGS
-#define P_TRAY_STOWED 0
-#define P_TRAY_INTAKE 100
+#define P_TRAY_INTAKE 20
 #define P_TRAY_STACK  540
 
 // TODO: Find actual values for this
-#define P_TWOBAR_STOWED 0
-#define P_TWOBAR_INTAKE 90
-#define P_TWOBAR_LOW_TOWER 180
-#define P_TWOBAR_MID_TOWER 270
+#define P_TWOBAR_STACK 0
+#define P_TWOBAR_INTAKE 120

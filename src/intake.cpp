@@ -15,7 +15,7 @@ void Intake::update() {
             motor.moveVelocity(0);
             break;
         case IntakeState::reverse:
-            motor.moveVelocity(-200);
+            motor.moveVelocity(-150);
             break;
     }
 }
@@ -26,6 +26,7 @@ void Intake::switchToState(IntakeState istate) {
 }
 
 void Intake::opcontrol() {
+    pros::lcd::print(6, "%d", (int)state);
     if (state == IntakeState::forward) {
         if (forwardBtn.changedToPressed()) {
             state = IntakeState::stop;
@@ -45,4 +46,5 @@ void Intake::opcontrol() {
             state = IntakeState::reverse;
         }
     }
+    update();
 }
