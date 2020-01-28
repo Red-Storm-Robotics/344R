@@ -6,7 +6,7 @@
 #define M_DRIVE_RL 9
 #define M_DRIVE_RR -10
 
-#define M_INTAKE_L 3
+#define M_INTAKE_L 4
 #define M_INTAKE_R -8
 
 #define M_TRAY 5
@@ -40,7 +40,7 @@
 
 // PRESET SETTINGS
 #define P_TRAY_INTAKE 20
-#define P_TRAY_STACK  540
+#define P_TRAY_STACK  670
 
 // TODO: Find actual values for this
 #define P_TWOBAR_STACK 0

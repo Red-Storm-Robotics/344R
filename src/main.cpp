@@ -95,12 +95,12 @@ void autonomous() {
 
     twoBarTray.moveToPreset(true);
     intake.switchToState(IntakeState::forward);
-    chassis->moveDistance(25_in);
+    chassis->moveDistance(26_in);
     intake.switchToState(IntakeState::stop);
 
     chassis->setMaxVelocity(80);
 
-    chassis->moveDistance(-4_in);
+    chassis->moveDistance(-5_in);
     chassis->turnAngle(135_deg);
 
     chassis->moveDistance(16_in);
