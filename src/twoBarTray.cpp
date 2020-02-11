@@ -33,21 +33,33 @@ void TwoBarTray::opcontrol() {
     }
 
     if (intakePreset.changedToPressed()) {
-        moveToPreset(true);
+        moveToPreset(P_INTK_NUM);
     } else if (stackPreset.changedToPressed()) {
-        moveToPreset(false);
+        moveToPreset(P_STACK_NUM);
+    } else if (lowPreset.changedToPressed()) {
+        moveToPreset(P_LOW_NUM);
+    } else if (midPreset.changedToPressed()) {
+        moveToPreset(P_MID_NUM);
     }
 }
 
-void TwoBarTray::moveToPreset(bool intake) {
+
+
+void TwoBarTray::moveToPreset(int preset) {
     twoBarManualMode = false;
     trayManualMode = false;
 
-    if (intake) {
+    if (preset == P_INTK_NUM) {
         twoBar.moveAbsolute(P_TWOBAR_INTAKE, 100);
         tray.moveAbsolute(P_TRAY_INTAKE, 100);
-    } else {
-        twoBar.moveAbsolute(P_TWOBAR_STACK, 100);
-        tray.moveAbsolute(P_TRAY_STACK, 100);
+    } else if (preset == P_STACK_NUM) {
+        twoBar.moveAbsolute(P_TWOBAR_STACK, 75);
+        tray.moveAbsolute(P_TRAY_STACK, 75);
+    } else if (preset == P_LOW_NUM) {
+       twoBar.moveAbsolute(P_TWOBAR_LOW, 100);
+       tray.moveAbsolute(P_TRAY_TOWER, 100);
+    } else if (preset == P_MID_NUM) {
+      twoBar.moveAbsolute(P_TWOBAR_MID, 100);
+      tray.moveAbsolute(P_TRAY_TOWER, 100);
     }
 }

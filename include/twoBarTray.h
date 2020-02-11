@@ -19,10 +19,12 @@ private:
 
     ControllerButton intakePreset = ControllerButton(C_PRESET_INTAKE);
     ControllerButton stackPreset = ControllerButton(C_PRESET_STACK);
+    ControllerButton lowPreset = ControllerButton(C_PRESET_LOW);
+    ControllerButton midPreset = ControllerButton(C_PRESET_MID);
 
 public:
     TwoBarTray();
     void update();
     void opcontrol();
-    void moveToPreset(bool intake);
+    void moveToPreset(int preset);
 };

@@ -14,7 +14,7 @@ Intake intake;
 
 TwoBarTray twoBarTray;
 
-ControllerButton autonBtn = ControllerButton(ControllerDigital::Y);
+//ControllerButton autonBtn = ControllerButton(ControllerDigital::Y);
 
 // AUTONOMOUS SELECTION
 bool redAlliance = true;
@@ -93,24 +93,24 @@ void autonomous() {
     chassis->setTurnsMirrored(!redAlliance);
     chassis->setMaxVelocity(50);
 
-    twoBarTray.moveToPreset(true);
+    twoBarTray.moveToPreset(P_INTK_NUM);
     intake.switchToState(IntakeState::forward);
-    chassis->moveDistance(26_in);
+    chassis->moveDistance(38_in);
     intake.switchToState(IntakeState::stop);
 
     chassis->setMaxVelocity(80);
 
-    chassis->moveDistance(-5_in);
+    chassis->moveDistance(-17_in);
     chassis->turnAngle(135_deg);
 
     chassis->moveDistance(16_in);
-    twoBarTray.moveToPreset(false);
+    twoBarTray.moveToPreset(P_STACK_NUM);
     pros::delay(2000);
     intake.switchToState(IntakeState::reverse);
     pros::delay(500);
     chassis->moveDistance(-16_in);
     intake.switchToState(IntakeState::stop);
-    twoBarTray.moveToPreset(true);
+    twoBarTray.moveToPreset(P_INTK_NUM);
 
     chassis->turnAngle(140_deg);
     intake.switchToState(IntakeState::forward);
@@ -118,12 +118,12 @@ void autonomous() {
     intake.switchToState(IntakeState::stop);
     chassis->moveDistance(-4_in);
 
-    twoBarTray.twoBar.moveAbsolute(1250, 100);
-    pros::delay(1000);
+    twoBarTray.moveToPreset(P_MID_NUM);
+    pros::delay(5000);
 
     chassis->moveDistance(8_in);
     intake.switchToState(IntakeState::reverse);
-    pros::delay(2000);
+    pros::delay(5000);
     intake.switchToState(IntakeState::stop);
 
 
@@ -145,9 +145,9 @@ void autonomous() {
 void opcontrol() {
 
 	while (true) {
-        if (autonBtn.changedToPressed()) {
-            autonomous();
-        }
+      //  if (autonBtn.changedToPressed()) {
+      //      autonomous();
+      //  }
         chassis->setMaxVelocity(200);
 
         double speed = controller.getAnalog(ControllerAnalog::leftY);

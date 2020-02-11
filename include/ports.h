@@ -6,10 +6,10 @@
 #define M_DRIVE_RL 9
 #define M_DRIVE_RR -10
 
-#define M_INTAKE_L 4
-#define M_INTAKE_R -8
+#define M_INTAKE_L 11
+#define M_INTAKE_R -20
 
-#define M_TRAY 5
+#define M_TRAY 15
 #define M_TWOBAR 6
 
 // CONTROL MAPPINGS
@@ -37,11 +37,21 @@
 
 #define C_PRESET_INTAKE ControllerDigital::B
 #define C_PRESET_STACK ControllerDigital::A
+#define C_PRESET_LOW ControllerDigital::Y
+#define C_PRESET_MID ControllerDigital::X
 
 // PRESET SETTINGS
 #define P_TRAY_INTAKE 20
 #define P_TRAY_STACK  670
+#define P_TRAY_TOWER 150
+
+#define P_STACK_NUM 0
+#define P_INTK_NUM 1
+#define P_LOW_NUM 2
+#define P_MID_NUM 3
 
 // TODO: Find actual values for this
 #define P_TWOBAR_STACK 0
 #define P_TWOBAR_INTAKE 120
+#define P_TWOBAR_LOW 950
+#define P_TWOBAR_MID 1175
