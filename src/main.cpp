@@ -91,42 +91,8 @@ void autonomous() {
 
 
     chassis->setTurnsMirrored(!redAlliance);
-    chassis->setMaxVelocity(50);
 
-    twoBarTray.moveToPreset(P_INTK_NUM);
-    intake.switchToState(IntakeState::forward);
-    chassis->moveDistance(38_in);
-    intake.switchToState(IntakeState::stop);
-
-    chassis->setMaxVelocity(80);
-
-    chassis->moveDistance(-17_in);
-    chassis->turnAngle(135_deg);
-
-    chassis->moveDistance(16_in);
-    twoBarTray.moveToPreset(P_STACK_NUM);
-    pros::delay(2000);
-    intake.switchToState(IntakeState::reverse);
-    pros::delay(500);
-    chassis->moveDistance(-16_in);
-    intake.switchToState(IntakeState::stop);
-    twoBarTray.moveToPreset(P_INTK_NUM);
-
-    chassis->turnAngle(140_deg);
-    intake.switchToState(IntakeState::forward);
-    chassis->moveDistance(22_in);
-    intake.switchToState(IntakeState::stop);
-    chassis->moveDistance(-4_in);
-
-    twoBarTray.moveToPreset(P_MID_NUM);
-    pros::delay(5000);
-
-    chassis->moveDistance(8_in);
-    intake.switchToState(IntakeState::reverse);
-    pros::delay(5000);
-    intake.switchToState(IntakeState::stop);
-
-
+    
 }
 
 /**
