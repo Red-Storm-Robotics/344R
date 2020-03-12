@@ -7,8 +7,13 @@ Controller controller;
 
 auto chassis = ChassisControllerBuilder()
                 .withMotors(M_DRIVE_FL, M_DRIVE_FR, M_DRIVE_RR, M_DRIVE_RL)
-                .withDimensions(AbstractMotor::gearset::green, {{4_in, 13_in}, imev5GreenTPR})
+                .withDimensions(AbstractMotor::gearset::green, {{4.1_in, 11.5_in}, imev5GreenTPR})
                 .build();
+
+auto profileController = AsyncMotionProfileControllerBuilder()
+                            .withLimits({1.0, 1.0, 5.0})
+                            .withOutput(chassis)
+                            .buildMotionProfileController();
 
 Intake intake;
 
@@ -17,7 +22,7 @@ TwoBarTray twoBarTray;
 //ControllerButton autonBtn = ControllerButton(ControllerDigital::Y);
 
 // AUTONOMOUS SELECTION
-bool redAlliance = true;
+bool redAlliance = false;
 bool protectedSide = true;
 bool autonomousEnabled = true;
 
@@ -89,10 +94,78 @@ void competition_initialize() {}
 void autonomous() {
     if (!autonomousEnabled) return;
 
-
     chassis->setTurnsMirrored(!redAlliance);
 
-    
+    twoBarTray.moveToPreset(P_MID_NUM);
+    pros::Task::delay(500);
+    twoBarTray.moveToPreset(P_INTK_NUM);
+    pros::Task::delay(500);
+
+    intake.switchToState(IntakeState::forward);
+
+    // Drive forward, intake 4 cubes + preload
+    profileController->generatePath({
+      {0_in, 0_in, 0_deg},
+      {40_in, 0_in, 0_deg}
+    }, "A", {0.5, 1.0, 5.0});
+
+    profileController->setTarget("A");
+    profileController->waitUntilSettled();
+    profileController->removePath("A");
+
+    // Back up, prepare to intake 2 add'l cubes
+    profileController->generatePath({
+      {0_in, 24_in, 0_deg},
+      {10_in, 24_in, 0_deg},
+      {28_in, 0_in, 0_deg},
+    }, "B");
+
+    profileController->setTarget("B", true);
+    profileController->waitUntilSettled();
+    profileController->removePath("B");
+
+    // Inatke 2 add'l cubes
+    profileController->generatePath({
+      {0_in, 0_in, 0_deg},
+      {24_in, 0_in, 0_deg}
+    }, "C", {0.5, 1.0, 5.0});
+
+    profileController->setTarget("C");
+    profileController->waitUntilSettled();
+    profileController->removePath("C");
+
+    intake.switchToState(IntakeState::stop);
+
+    // Turn towards corner
+    chassis->turnAngle(90_deg);
+    chassis->waitUntilSettled();
+
+    // Drive towards corner to stack cubes
+    profileController->generatePath({
+      {0_in, 0_in, 0_deg},
+      {52_in, 28_in, 45_deg}
+    }, "D");
+
+    profileController->setTarget("D");
+    profileController->waitUntilSettled();
+    profileController->removePath("D");
+
+    // Stack cubes
+    twoBarTray.moveToPreset(P_STACK_NUM);
+    pros::Task::delay(5000);
+
+    intake.switchToState(IntakeState::reverse);
+    pros::Task::delay(250);
+    intake.switchToState(IntakeState::stop);
+
+    profileController->generatePath({
+      {0_in, 0_in, 0_deg},
+      {16_in, 0_in, 0_deg}
+    }, "E");
+
+    profileController->setTarget("E", true);
+    profileController->waitUntilSettled();
+    profileController->removePath("E");
 }
 
 /**

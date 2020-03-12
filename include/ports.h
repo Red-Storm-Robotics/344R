@@ -41,9 +41,9 @@
 #define C_PRESET_MID ControllerDigital::X
 
 // PRESET SETTINGS
-#define P_TRAY_INTAKE 20
-#define P_TRAY_STACK  670
-#define P_TRAY_TOWER 150
+#define P_TRAY_INTAKE 0
+#define P_TRAY_STACK 750
+#define P_TRAY_TOWER 0
 
 #define P_STACK_NUM 0
 #define P_INTK_NUM 1
@@ -52,6 +52,6 @@
 
 // TODO: Find actual values for this
 #define P_TWOBAR_STACK 0
-#define P_TWOBAR_INTAKE 120
-#define P_TWOBAR_LOW 950
-#define P_TWOBAR_MID 1175
+#define P_TWOBAR_INTAKE 40
+#define P_TWOBAR_LOW 450
+#define P_TWOBAR_MID 600

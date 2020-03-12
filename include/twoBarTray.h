@@ -5,10 +5,8 @@
 
 class TwoBarTray {
 public:
-    Motor twoBar =  Motor(M_TWOBAR, true, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::degrees);
+    Motor twoBar =  Motor(M_TWOBAR, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
     Motor tray = Motor(M_TRAY, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
-
-private:
     bool twoBarManualMode = false;
     bool trayManualMode = false;
 

@@ -23,10 +23,10 @@ void TwoBarTray::opcontrol() {
     }
 
     if (trayUp.isPressed()) {
-        tray.moveVelocity(100);
+        tray.moveVelocity(50);
         trayManualMode = true;
     } else if (trayDown.isPressed()) {
-        tray.moveVelocity(-100);
+        tray.moveVelocity(-50);
         trayManualMode = true;
     } else if (trayManualMode) {
         tray.moveVelocity(0);
@@ -53,8 +53,8 @@ void TwoBarTray::moveToPreset(int preset) {
         twoBar.moveAbsolute(P_TWOBAR_INTAKE, 100);
         tray.moveAbsolute(P_TRAY_INTAKE, 100);
     } else if (preset == P_STACK_NUM) {
-        twoBar.moveAbsolute(P_TWOBAR_STACK, 75);
-        tray.moveAbsolute(P_TRAY_STACK, 75);
+        twoBar.moveAbsolute(P_TWOBAR_STACK, 100);
+        tray.moveAbsolute(P_TRAY_STACK, 35);
     } else if (preset == P_LOW_NUM) {
        twoBar.moveAbsolute(P_TWOBAR_LOW, 100);
        tray.moveAbsolute(P_TRAY_TOWER, 100);
